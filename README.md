@@ -32,3 +32,34 @@ JOIN sys.objects obj
     ON perm.major_id = obj.object_id
 WHERE obj.name = 'CashTransaction_History'
 ORDER BY UserName;
+
+SELECT  
+    @@SERVERNAME AS ServerName,
+    DB_NAME() AS Dbname,
+    p.name AS UserName,
+    p.type_desc AS TypeOfLogin,
+    r.name AS DatabaseRoleAssigned,
+    obj.name AS TableName,
+    perm.permission_name AS TablePermission,
+    perm.state_desc AS PermissionState
+FROM sys.database_principals p
+
+LEFT JOIN sys.database_role_members drm
+    ON drm.member_principal_id = p.principal_id
+
+LEFT JOIN sys.database_principals r
+    ON drm.role_principal_id = r.principal_id
+
+LEFT JOIN sys.database_permissions perm
+    ON perm.grantee_principal_id = p.principal_id
+    AND perm.class = 1   -- OBJECT permission only
+
+LEFT JOIN sys.objects obj
+    ON perm.major_id = obj.object_id
+    AND obj.name = 'CashTransaction_History'   -- filter here instead
+
+WHERE p.type_desc IN ('SQL_USER','WINDOWS_USER','WINDOWS_GROUP')
+AND p.name NOT IN ('sys','INFORMATION_SCHEMA','guest','dbo')
+
+ORDER BY p.name;
+
