@@ -63,3 +63,19 @@ AND p.name NOT IN ('sys','INFORMATION_SCHEMA','guest','dbo')
 
 ORDER BY p.name;
 
+
+
+
+
+SELECT 
+    dp.name AS UserName,
+    dp.type_desc,
+    HAS_PERMS_BY_NAME('dbo.CashTransaction_History', 'OBJECT', 'SELECT') AS CanSelect,
+    HAS_PERMS_BY_NAME('dbo.CashTransaction_History', 'OBJECT', 'INSERT') AS CanInsert,
+    HAS_PERMS_BY_NAME('dbo.CashTransaction_History', 'OBJECT', 'UPDATE') AS CanUpdate,
+    HAS_PERMS_BY_NAME('dbo.CashTransaction_History', 'OBJECT', 'DELETE') AS CanDelete
+FROM sys.database_principals dp
+WHERE dp.type IN ('S','U','G')
+AND dp.name NOT IN ('sys','INFORMATION_SCHEMA','guest','dbo');
+
+
