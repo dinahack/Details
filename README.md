@@ -21,3 +21,14 @@ WHERE p.type_desc NOT IN ('DATABASE_ROLE','ASYMMETRIC_KEY_MAPPED_USER')
 AND p.name NOT IN ('sys','INFORMATION_SCHEMA','guest','dbo')
 AND obj.name = 'CashTransaction_History'   -- 👈 your table name here
 ORDER BY p.name;
+
+
+SELECT 
+    USER_NAME(perm.grantee_principal_id) AS UserName,
+    perm.permission_name,
+    perm.state_desc
+FROM sys.database_permissions perm
+JOIN sys.objects obj 
+    ON perm.major_id = obj.object_id
+WHERE obj.name = 'CashTransaction_History'
+ORDER BY UserName;
